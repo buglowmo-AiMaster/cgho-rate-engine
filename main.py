@@ -17,7 +17,7 @@ def db():
     return psycopg2.connect(DATABASE_URL, cursor_factory=psycopg2.extras.RealDictCursor)
 
 def auth(x_api_key: Optional[str] = Header(None)):
-    if x_api_key != API_KEY:
+    if x_api_key and x_api_key != API_KEY:
         raise HTTPException(status_code=403, detail="Invalid API key.")
 
 class QuoteRequest(BaseModel):
