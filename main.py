@@ -131,7 +131,7 @@ def quote(req: QuoteRequest, x_api_key: Optional[str] = Header(None)):
     plan_params = [req.plan_tier] if req.plan_tier else []
 
     cur.execute("""
-        SELECT DISTINCT ON (p.plan_tier, r.aoc, r.deductible_usd, r.coinsurance_pct, r.source_file)
+        SELECT DISTINCT ON (p.plan_tier)
             i.name AS insurer, p.name AS plan, p.plan_tier,
             r.aoc, r.deductible_usd, r.coinsurance_pct, r.oop_max_usd,
             r.hw_coverage, r.dv_coverage, r.ev_coverage,
@@ -151,7 +151,7 @@ def quote(req: QuoteRequest, x_api_key: Optional[str] = Header(None)):
           AND r.age_max >= %s
           AND (r.expiry_date IS NULL OR r.expiry_date > CURRENT_DATE)
           """ + plan_clause + """
-        ORDER BY p.plan_tier, r.aoc, r.deductible_usd, r.coinsurance_pct, r.source_file, r.base_premium ASC
+        ORDER BY p.plan_tier, r.base_premium ASC
     """, [country["loc_id"], req.aoc, req.deductible_usd, req.coinsurance_pct,
           req.age, req.age] + plan_params)
 
